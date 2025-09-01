@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLO Period Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f9;
+    }
+    .container {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 380px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+      text-align: left;
+    }
+    input, button {
+      padding: 8px;
+      width: 95%;
+      margin: 5px 0 15px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #45a049; }
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 15px;
+      color: #333;
+      text-align: left;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>CLO Period Calculator</h2>
+
+    <label for="closeDate">CLO Close Date:</label>
+    <input type="date" id="closeDate">
+
+    <label for="reinvEnd">Reinvestment Period End Date:</label>
+    <input type="date" id="reinvEnd">
+    <button onclick="calculateReinv()">Calculate Reinvestment Period</button>
+
+    <label for="noncallEnd">Non-call Period End Date:</label>
+    <input type="date" id="noncallEnd">
+    <button onclick="calculateNoncall()">Calculate Non-call Period</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateYears(startDate, endDate) {
+      let start = new Date(startDate);
+      let end = new Date(endDate);
+
+      let diffTime = end - start;
+      let diffYears = diffTime / (1000 * 60 * 60 * 24 * 365.25);
+
+      return diffYears;
+    }
+
+    function roundToQuarter(value) {
+      return Math.round(value * 4) / 4;
+    }
+
+    function calculateReinv() {
+      let closeDate = document.getElementById("closeDate").value;
+      let reinvEnd = document.getElementById("reinvEnd").value;
+
+      if (!closeDate || !reinvEnd) {
+        document.getElementById("result").innerText = "Please enter both close date and reinvestment end date.";
+        return;
+      }
+
+      let exact = calculateYears(closeDate, reinvEnd);
+      let rounded = roundToQuarter(exact);
+
+      document.getElementById("result").innerText =
+        `CLO Close Date: ${new Date(closeDate).toLocaleDateString('en-US')}\n` +
+        `Reinvestment Period (Exact): ${exact.toFixed(2)} years\n` +
+        `Reinvestment Period (Rounded): ${rounded.toFixed(2)} years`;
+    }
+
+    function calculateNoncall() {
+      let closeDate = document.getElementById("closeDate").value;
+      let noncallEnd = document.getElementById("noncallEnd").value;
+
+      if (!closeDate || !noncallEnd) {
+        document.getElementById("result").innerText = "Please enter both close date and non-call end date.";
+        return;
+      }
+
+      let exact = calculateYears(closeDate, noncallEnd);
+      let rounded = roundToQuarter(exact);
+
+      document.getElementById("result").innerText =
+        `CLO Close Date: ${new Date(closeDate).toLocaleDateString('en-US')}\n` +
+        `Non-call Period (Exact): ${exact.toFixed(2)} years\n` +
+        `Non-call Period (Rounded): ${rounded.toFixed(2)} years`;
+    }
+  </script>
+</body>
+</html>
